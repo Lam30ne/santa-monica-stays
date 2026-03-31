@@ -132,6 +132,14 @@
 
 
 
+  @media (max-width: 479px) {
+    
+  .wework-note { background: var(--ocean-light); border-bottom: 1px solid var(--border); padding: 0.5rem 1.5rem; text-align: center; font-size: 0.78rem; color: var(--ocean-dark); }
+  .wework-note a { color: var(--ocean); font-weight: 600; text-decoration: none; }
+  .wework-note a:hover { text-decoration: underline; }
+  .wework-note strong { color: var(--ocean-dark); }
+  @media (max-width: 479px) { .wework-note { font-size: 0.72rem; padding: 0.4rem 1rem; } }
+
   .filter-bar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; }
   .filter-group { display: inline-flex; align-items: center; gap: 0.4rem; }
   .filter-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
@@ -142,7 +150,11 @@
   .listing.filter-hidden, .pick-card.filter-hidden { display: none !important; }
   .platform-section.filter-hidden-section { display: none !important; }
   @media (max-width: 479px) {
-    .filter-bar { padding: 0.6rem 1rem; gap: 0.6rem; }
+    @media (max-width: 479px) {
+    .wework-note { font-size: 0.72rem; padding: 0.4rem 1rem; }
+  }
+
+  .filter-bar { padding: 0.6rem 1rem; gap: 0.6rem; }
     .filter-btn { font-size: 0.72rem; padding: 0.3rem 0.65rem; min-height: 36px; }
     .filter-label { font-size: 0.7rem; }
   }
@@ -310,10 +322,16 @@
 </div>
 
 <div class="goal-bar">
-  <span class="goal-tag">Near WeWork (520 Broadway)</span>
+  <span class="goal-tag">Near WeWork (520 Broadway &amp; 312 Arizona Ave)</span>
   <span class="goal-tag">Walk to beach</span>
   <span class="goal-tag">Full kitchen (stove + oven)</span>
   <span class="goal-tag">HSP / scent-friendly</span>
+</div>
+<div class="wework-note" role="note" aria-label="WeWork locations">
+  <strong>WeWork locations:</strong>
+  <a href="https://www.wework.com/buildings/520-broadway--los-angeles--CA" target="_blank" rel="noopener noreferrer">520 Broadway</a> (may be closed — verify) ·
+  <a href="https://www.wework.com/buildings/312-arizona-ave--los-angeles--CA" target="_blank" rel="noopener noreferrer">312 Arizona Ave</a> (confirmed open) ·
+  Both in downtown SM, ~2 blocks apart
 </div>
 <div class="legend-bar" role="region" aria-label="Legend">
   <span class="legend-item"><span class="legend-icon" aria-hidden="true">⭐</span> 4+ reviews</span>
