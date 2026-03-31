@@ -407,49 +407,50 @@
 
     var btn = document.getElementById('submitBtn');
     var bar = document.getElementById('submitBar');
-    btn.textContent = 'Saving...';
+    btn.textContent = 'Saving…';
     btn.classList.add('saving');
 
-    var oldMsg = bar.querySelector('.submit-saved-msg, .submit-error-msg');
-    if (oldMsg) oldMsg.remove();
+    // Remove any previous status messages
+    var oldMsgs = bar.querySelectorAll('.submit-saved-msg, .submit-error-msg');
+    for (var i = 0; i < oldMsgs.length; i++) oldMsgs[i].remove();
+
+    function done(success, text) {
+      isSaving = false;
+      btn.textContent = 'Submit Selections';
+      btn.classList.remove('saving');
+      var msg = document.createElement('div');
+      msg.className = success ? 'submit-saved-msg' : 'submit-error-msg';
+      msg.textContent = text;
+      bar.appendChild(msg);
+      if (success) setTimeout(function() { msg.style.opacity = '0.5'; }, 3000);
+    }
 
     fetch('/api/save-votes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ votes: votes })
     })
-    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
-    .then(function(res) {
-      isSaving = false;
-      btn.textContent = 'Submit Selections';
-      btn.classList.remove('saving');
-      if (res.ok) {
-        var approveCount = 0, maybeCount = 0, denyCount = 0;
-        for (var k in votes) {
-          if (votes[k] === 'approve') approveCount++;
-          else if (votes[k] === 'maybe') maybeCount++;
-          else if (votes[k] === 'deny') denyCount++;
+    .then(function(r) {
+      var httpOk = r.ok;
+      return r.text().then(function(body) {
+        var data;
+        try { data = JSON.parse(body); } catch(e) { data = null; }
+        if (httpOk && data && data.success) {
+          var ac = 0, mc = 0, dc = 0;
+          for (var k in votes) {
+            if (votes[k] === 'approve') ac++;
+            else if (votes[k] === 'maybe') mc++;
+            else if (votes[k] === 'deny') dc++;
+          }
+          done(true, 'Saved! ' + ac + ' approved, ' + mc + ' maybe, ' + dc + ' denied');
+        } else {
+          var errMsg = (data && data.error) ? data.error : 'unexpected response';
+          done(false, 'Error: ' + errMsg);
         }
-        var msg = document.createElement('div');
-        msg.className = 'submit-saved-msg';
-        msg.textContent = 'Saved! ' + approveCount + ' approved, ' + maybeCount + ' maybe, ' + denyCount + ' denied';
-        bar.appendChild(msg);
-        setTimeout(function() { msg.style.opacity = '0.5'; }, 3000);
-      } else {
-        var msg = document.createElement('div');
-        msg.className = 'submit-error-msg';
-        msg.textContent = 'Error saving: ' + (res.data.error || 'unknown error');
-        bar.appendChild(msg);
-      }
+      });
     })
     .catch(function(err) {
-      isSaving = false;
-      btn.textContent = 'Submit Selections';
-      btn.classList.remove('saving');
-      var msg = document.createElement('div');
-      msg.className = 'submit-error-msg';
-      msg.textContent = 'Network error \u2014 try again';
-      bar.appendChild(msg);
+      done(false, 'Network error — try again');
     });
   }
 
