@@ -100,8 +100,11 @@
   .submit-btn { padding: 0.75rem 2.5rem; background: var(--ocean); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
   .submit-btn:hover { background: var(--ocean-dark); }
   .submit-btn:disabled { background: var(--text-muted); cursor: default; }
+  .submit-btn.saving { background: var(--text-muted); cursor: wait; }
   .submit-count { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; }
   .submit-locked-msg { font-size: 0.9rem; color: var(--palm); font-weight: 600; }
+  .submit-saved-msg { font-size: 0.85rem; color: var(--palm); font-weight: 600; margin-top: 0.35rem; }
+  .submit-error-msg { font-size: 0.85rem; color: var(--deny); font-weight: 600; margin-top: 0.35rem; }
 
   .browse-all { display: inline-block; margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--ocean); text-decoration: none; }
   .browse-all:hover { text-decoration: underline; }
@@ -324,7 +327,7 @@
 
 <!-- Sticky submit bar -->
 <div class="submit-bar" id="submitBar">
-  <button class="submit-btn" id="submitBtn" onclick="lockVotes()">Submit Selections</button>
+  <button class="submit-btn" id="submitBtn" onclick="saveVotes()">Submit Selections</button>
   <div class="submit-count" id="submitCount">0 of 25 listings rated</div>
 </div>
 
@@ -357,11 +360,12 @@
     'top-2': 'deny',
     'top-3': 'approve'
   };
-  var isLocked = true;
+  var isLocked = false;
+  var isSaving = false;
   var totalListings = document.querySelectorAll('[data-id]').length;
 
   function vote(btn, choice) {
-    if (isLocked) return;
+    if (isSaving) return;
     var card = btn.closest('[data-id]');
     var id = card.getAttribute('data-id');
     var row = btn.closest('.vote-row');
@@ -389,39 +393,68 @@
 
   function updateCount() {
     var count = Object.keys(votes).length;
-    document.getElementById('submitCount').textContent = count + ' of ' + totalListings + ' listings rated';
+    var el = document.getElementById('submitCount');
+    if (el) el.textContent = count + ' of ' + totalListings + ' listings rated';
   }
 
-  function lockVotes() {
+  function saveVotes() {
     if (Object.keys(votes).length === 0) {
       alert('Rate at least one listing before submitting.');
       return;
     }
-    isLocked = true;
+    if (isSaving) return;
+    isSaving = true;
 
-    // Lock all buttons
-    document.querySelectorAll('.vote-btn').forEach(function(btn) {
-      btn.classList.add('locked');
-      var card = btn.closest('[data-id]');
-      var id = card.getAttribute('data-id');
-      if (votes[id] && btn.getAttribute('data-choice') !== votes[id]) {
-        btn.classList.add('faded');
-      }
-    });
-
-    // Update submit bar
+    var btn = document.getElementById('submitBtn');
     var bar = document.getElementById('submitBar');
-    var approveCount = 0, maybeCount = 0, denyCount = 0;
-    for (var k in votes) {
-      if (votes[k] === 'approve') approveCount++;
-      else if (votes[k] === 'maybe') maybeCount++;
-      else if (votes[k] === 'deny') denyCount++;
-    }
-    bar.innerHTML = '<div class="submit-locked-msg">Selections locked in: ' + approveCount + ' approved, ' + maybeCount + ' maybe, ' + denyCount + ' denied</div>';
+    btn.textContent = 'Saving...';
+    btn.classList.add('saving');
+
+    var oldMsg = bar.querySelector('.submit-saved-msg, .submit-error-msg');
+    if (oldMsg) oldMsg.remove();
+
+    fetch('/api/save-votes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ votes: votes })
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+    .then(function(res) {
+      isSaving = false;
+      btn.textContent = 'Submit Selections';
+      btn.classList.remove('saving');
+      if (res.ok) {
+        var approveCount = 0, maybeCount = 0, denyCount = 0;
+        for (var k in votes) {
+          if (votes[k] === 'approve') approveCount++;
+          else if (votes[k] === 'maybe') maybeCount++;
+          else if (votes[k] === 'deny') denyCount++;
+        }
+        var msg = document.createElement('div');
+        msg.className = 'submit-saved-msg';
+        msg.textContent = 'Saved! ' + approveCount + ' approved, ' + maybeCount + ' maybe, ' + denyCount + ' denied';
+        bar.appendChild(msg);
+        setTimeout(function() { msg.style.opacity = '0.5'; }, 3000);
+      } else {
+        var msg = document.createElement('div');
+        msg.className = 'submit-error-msg';
+        msg.textContent = 'Error saving: ' + (res.data.error || 'unknown error');
+        bar.appendChild(msg);
+      }
+    })
+    .catch(function(err) {
+      isSaving = false;
+      btn.textContent = 'Submit Selections';
+      btn.classList.remove('saving');
+      var msg = document.createElement('div');
+      msg.className = 'submit-error-msg';
+      msg.textContent = 'Network error \u2014 try again';
+      bar.appendChild(msg);
+    });
   }
 
 
-  // Apply saved votes on page load
+  // Apply saved votes on page load (editable, not locked)
   (function applyVotes() {
     for (var id in votes) {
       var card = document.querySelector('[data-id="' + id + '"]');
@@ -431,24 +464,14 @@
       var btns = row.querySelectorAll('.vote-btn');
       btns.forEach(function(b) {
         if (b.getAttribute('data-choice') === choice) {
-          b.className = 'vote-btn ' + choice + '-active locked';
+          b.className = 'vote-btn ' + choice + '-active';
         } else {
-          b.className = 'vote-btn locked faded';
+          b.className = 'vote-btn';
         }
       });
       card.classList.add('voted-' + choice);
     }
-    document.querySelectorAll('.vote-btn').forEach(function(btn) {
-      btn.classList.add('locked');
-    });
-    var bar = document.getElementById('submitBar');
-    var approveCount = 0, maybeCount = 0, denyCount = 0;
-    for (var k in votes) {
-      if (votes[k] === 'approve') approveCount++;
-      else if (votes[k] === 'maybe') maybeCount++;
-      else if (votes[k] === 'deny') denyCount++;
-    }
-    bar.innerHTML = '<div class="submit-locked-msg">Selections locked in: ' + approveCount + ' approved, ' + maybeCount + ' maybe, ' + denyCount + ' denied</div>';
+    updateCount();
   })();
 </script>
 
