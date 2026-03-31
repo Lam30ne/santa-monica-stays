@@ -15,7 +15,7 @@
     --palm: #2d6a4f;
     --palm-light: #eaf5ef;
     --text: #2c2c2c;
-    --text-muted: #6b7280;
+    --text-muted: #596066;
     --border: #e5e1d8;
     --white: #ffffff;
     --gold: #d4a843;
@@ -88,10 +88,10 @@
 
   /* Locked listing visual */
   .listing.voted-approve { border-left: 4px solid var(--approve); }
-  .listing.voted-deny { border-left: 4px solid var(--deny); opacity: 0.55; }
+  .listing.voted-deny { border-left: 4px solid var(--deny); opacity: 0.65; }
   .listing.voted-maybe { border-left: 4px solid var(--maybe); }
   .pick-card.voted-approve { border-right: 4px solid var(--approve); }
-  .pick-card.voted-deny { border-right: 4px solid var(--deny); opacity: 0.55; }
+  .pick-card.voted-deny { border-right: 4px solid var(--deny); opacity: 0.65; }
   .pick-card.voted-maybe { border-right: 4px solid var(--maybe); }
 
   /* Submit bar */
@@ -130,15 +130,157 @@
 
   footer { text-align: center; padding: 2rem 1.5rem 5rem; font-size: 0.8rem; color: var(--text-muted); }
 
+  /* ——— FOCUS STYLES (WCAG 2.4.7) ——— */
+  *:focus-visible {
+    outline: 3px solid var(--ocean);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  .vote-btn:focus-visible {
+    outline: 3px solid var(--ocean);
+    outline-offset: 1px;
+    box-shadow: 0 0 0 5px rgba(26,107,138,0.2);
+  }
+
+  /* ——— SKIP LINK (WCAG 2.4.1) ——— */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    background: var(--ocean);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0 0 8px 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 200;
+    text-decoration: none;
+    transition: top 0.2s;
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  /* ——— REDUCED MOTION (WCAG 2.3.3) ——— */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ——— VISUALLY HIDDEN UTILITY (screen-reader only) ——— */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ——— MOBILE-FIRST RESPONSIVE ——— */
+
+  /* Small screens (default) — vote buttons are taller for touch */
+  .vote-btn {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .submit-btn {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  .cta {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Stack listing price below info on narrow screens */
+  @media (max-width: 479px) {
+    .listing-top {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .listing-price {
+      text-align: left;
+    }
+    .hero h1 {
+      font-size: 1.5rem;
+    }
+    .hero .subtitle {
+      font-size: 0.88rem;
+    }
+    .goal-bar {
+      padding: 0.75rem 1rem;
+      gap: 0.5rem;
+    }
+    .goal-tag {
+      font-size: 0.72rem;
+      padding: 0.3rem 0.6rem;
+    }
+    .container {
+      padding: 0 1rem;
+    }
+    .pick-card {
+      padding: 1.25rem 1rem;
+    }
+    .pick-medal {
+      position: static;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .submit-bar {
+      padding: 0.75rem 1rem;
+    }
+    .vote-btn {
+      font-size: 0.72rem;
+      padding: 0.5rem 0.2rem;
+    }
+    .template-msg {
+      font-size: 0.8rem;
+      padding: 0.85rem 1rem;
+    }
+    .hsp-section {
+      padding: 1.25rem 1rem;
+    }
+  }
+
+  /* Medium screens */
+  @media (min-width: 480px) and (max-width: 639px) {
+    .hero h1 {
+      font-size: 1.75rem;
+    }
+  }
+
+  /* Tablet and up */
   @media (min-width: 640px) {
     .hero h1 { font-size: 2.5rem; }
     .other-platforms { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Desktop */
+  @media (min-width: 900px) {
+    .container {
+      padding: 0 2rem;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="hero">
+<a class="skip-link" href="#listings">Skip to listings</a>
+
+<header>
+<div class="hero" role="banner">
   <h1>Santa Monica Monthly Stays</h1>
   <p class="subtitle">April 26 – May 26, 2026 &middot; Exploring SM as a place to live</p>
 </div>
@@ -149,12 +291,14 @@
   <span class="goal-tag">Full kitchen (stove + oven)</span>
   <span class="goal-tag">HSP / scent-friendly</span>
 </div>
+</header>
 
+<main id="listings">
 <div class="container">
 
   <!-- TOP 3 -->
-  <div class="top-picks">
-    <h2>Top 3 Recommendations</h2>
+  <section class="top-picks" aria-labelledby="top-picks-heading">
+    <h2 id="top-picks-heading">Top 3 Recommendations</h2>
 
     <div class="pick-card gold" data-id="top-1">
       <span class="pick-medal">🥇</span>
@@ -166,11 +310,11 @@
         <li>Real apartment in a residential pocket of SM — low fragrance risk</li>
         <li>Message the landlord about scent-free cleaning</li>
       </ul>
-      <a class="cta" href="https://www.furnishedfinder.com/property/913496_1" target="_blank">View Listing</a>
-      <div class="vote-row">
-        <button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button>
-        <button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button>
-        <button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button>
+      <a class="cta" href="https://www.furnishedfinder.com/property/913496_1" target="_blank" rel="noopener noreferrer">View Listing</a>
+      <div class="vote-row" role="group" aria-label="Vote on this listing">
+        <button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button>
+        <button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button>
+        <button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button>
       </div>
     </div>
 
@@ -184,11 +328,11 @@
         <li>Best price-to-location ratio on Airbnb</li>
         <li>Downtown SM = walkable to WeWork + beach</li>
       </ul>
-      <a class="cta" href="https://www.airbnb.com/rooms/1055976?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">View on Airbnb</a>
-      <div class="vote-row">
-        <button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button>
-        <button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button>
-        <button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button>
+      <a class="cta" href="https://www.airbnb.com/rooms/1055976?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">View on Airbnb</a>
+      <div class="vote-row" role="group" aria-label="Vote on this listing">
+        <button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button>
+        <button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button>
+        <button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button>
       </div>
     </div>
 
@@ -202,14 +346,14 @@
         <li>Also on Airbnb for $4,354 — VRBO is $280 cheaper</li>
         <li>Ocean view = you'll know right away if SM is for you</li>
       </ul>
-      <a class="cta" href="https://www.vrbo.com/785189?chkin=2026-04-26&chkout=2026-05-26" target="_blank">View on VRBO</a>
-      <div class="vote-row">
-        <button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button>
-        <button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button>
-        <button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button>
+      <a class="cta" href="https://www.vrbo.com/785189?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">View on VRBO</a>
+      <div class="vote-row" role="group" aria-label="Vote on this listing">
+        <button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button>
+        <button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button>
+        <button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- AIRBNB -->
   <div class="platform-section">
@@ -218,25 +362,25 @@
       <span class="platform-badge">Monthly stays &middot; Kitchen filter</span>
     </div>
 
-    <div class="listing" data-id="ab-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1055976?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Santa Monica 4</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.67 (18 reviews) &middot; Superhost &middot; Downtown SM</div><div class="listing-note">Best value on Airbnb in SM proper.</div></div><div class="listing-price"><div class="amount">$3,345</div><div class="per-night">~$111/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1055976?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Santa Monica 4</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.67 (18 reviews) &middot; Superhost &middot; Downtown SM</div><div class="listing-note">Best value on Airbnb in SM proper.</div></div><div class="listing-price"><div class="amount">$3,345</div><div class="per-night">~$111/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/13006334?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Santa Monica One BedRoom Apt (Garden House)</a></div><div class="listing-meta">Bungalow &middot; 1BR &middot; 4.89 (19 reviews) &middot; SM</div><div class="listing-note">Bungalow = private, less hotel-style cleaning. Good for HSP.</div></div><div class="listing-price"><div class="amount">$3,690</div><div class="per-night">~$123/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/13006334?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Santa Monica One BedRoom Apt (Garden House)</a></div><div class="listing-meta">Bungalow &middot; 1BR &middot; 4.89 (19 reviews) &middot; SM</div><div class="listing-note">Bungalow = private, less hotel-style cleaning. Good for HSP.</div></div><div class="listing-price"><div class="amount">$3,690</div><div class="per-night">~$123/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1308201838446456215?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Venice Beach Flat, Prime Venice!</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; Superhost &middot; Venice</div><div class="listing-note">53% monthly discount. Slightly farther from WeWork.</div></div><div class="listing-price"><div class="amount">$3,402</div><div class="per-night">~$113/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1308201838446456215?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Venice Beach Flat, Prime Venice!</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; Superhost &middot; Venice</div><div class="listing-note">53% monthly discount. Slightly farther from WeWork.</div></div><div class="listing-price"><div class="amount">$3,402</div><div class="per-night">~$113/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1128285786836277011?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Upper Brentwood 1BD/1BA w/ Balcony</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 5.0 (5 reviews) &middot; Brentwood</div><div class="listing-note">Perfect rating. Short Uber to WeWork.</div></div><div class="listing-price"><div class="amount">$3,800</div><div class="per-night">~$127/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1128285786836277011?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Upper Brentwood 1BD/1BA w/ Balcony</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 5.0 (5 reviews) &middot; Brentwood</div><div class="listing-note">Perfect rating. Short Uber to WeWork.</div></div><div class="listing-price"><div class="amount">$3,800</div><div class="per-night">~$127/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/9544587?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Ocean view with your capuccino</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.81 (27 reviews) &middot; SM — ocean view</div><div class="listing-note">12 min walk to beach. Also on VRBO for $4,073 (cheaper).</div></div><div class="listing-price"><div class="amount">$4,354</div><div class="per-night">~$145/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/9544587?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Ocean view with your capuccino</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.81 (27 reviews) &middot; SM — ocean view</div><div class="listing-note">12 min walk to beach. Also on VRBO for $4,073 (cheaper).</div></div><div class="listing-price"><div class="amount">$4,354</div><div class="per-night">~$145/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-6"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/19084586?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Brand New 1BR Near Santa Monica Beach</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.86 (14 reviews) &middot; Superhost &middot; SM</div><div class="listing-note">Newly built = less fragrance buildup.</div></div><div class="listing-price"><div class="amount">$4,421</div><div class="per-night">~$147/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-6"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/19084586?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Brand New 1BR Near Santa Monica Beach</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.86 (14 reviews) &middot; Superhost &middot; SM</div><div class="listing-note">Newly built = less fragrance buildup.</div></div><div class="listing-price"><div class="amount">$4,421</div><div class="per-night">~$147/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-7"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1343698967393585752?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Charming 1BR Close to Santa Monica</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; SM</div><div class="listing-note">37% monthly discount applied.</div></div><div class="listing-price"><div class="amount">$4,556</div><div class="per-night">~$152/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-7"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1343698967393585752?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Charming 1BR Close to Santa Monica</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; SM</div><div class="listing-note">37% monthly discount applied.</div></div><div class="listing-price"><div class="amount">$4,556</div><div class="per-night">~$152/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-8"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/548825547296423090?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">One Bedroom Condo in quiet complex</a></div><div class="listing-meta">Condo &middot; 1BR &middot; 4.67 (6 reviews) &middot; SM</div><div class="listing-note">Quiet complex = good for HSP.</div></div><div class="listing-price"><div class="amount">$3,707</div><div class="per-night">~$124/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-8"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/548825547296423090?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">One Bedroom Condo in quiet complex</a></div><div class="listing-meta">Condo &middot; 1BR &middot; 4.67 (6 reviews) &middot; SM</div><div class="listing-note">Quiet complex = good for HSP.</div></div><div class="listing-price"><div class="amount">$3,707</div><div class="per-night">~$124/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ab-9"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1056045?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Sunny Santa Monica Apt 7</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.67 (18 reviews) &middot; SM</div><div class="listing-note">Solid mid-range option.</div></div><div class="listing-price"><div class="amount">$4,287</div><div class="per-night">~$143/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ab-9"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1056045?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Sunny Santa Monica Apt 7</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 4.67 (18 reviews) &middot; SM</div><div class="listing-note">Solid mid-range option.</div></div><div class="listing-price"><div class="amount">$4,287</div><div class="per-night">~$143/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <a class="browse-all" href="https://www.airbnb.com/s/Downtown-Santa-Monica--Santa-Monica--CA/homes?checkin=2026-04-26&checkout=2026-05-26&adults=2&min_bedrooms=1&amenities%5B%5D=8&price_max=5000&monthly_start_date=2026-04-26&monthly_length=1" target="_blank">Browse all Airbnb results &rarr;</a>
+    <a class="browse-all" href="https://www.airbnb.com/s/Downtown-Santa-Monica--Santa-Monica--CA/homes?checkin=2026-04-26&checkout=2026-05-26&adults=2&min_bedrooms=1&amenities%5B%5D=8&price_max=5000&monthly_start_date=2026-04-26&monthly_length=1" target="_blank" rel="noopener noreferrer">Browse all Airbnb results &rarr;</a>
   </div>
 
   <!-- VRBO -->
@@ -246,21 +390,21 @@
       <span class="platform-badge">Apr 26 – May 26 &middot; Kitchen filter</span>
     </div>
 
-    <div class="listing" data-id="vr-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/4390604?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Charming 1-bedroom apartment in lovely SM with WiFi</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 10 min drive to beach</div><div class="listing-note">Free cancellation until Apr 12. Cheapest option.</div></div><div class="listing-price"><div class="amount">$3,393</div><div class="per-night">$113/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/4390604?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Charming 1-bedroom apartment in lovely SM with WiFi</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 10 min drive to beach</div><div class="listing-note">Free cancellation until Apr 12. Cheapest option.</div></div><div class="listing-price"><div class="amount">$3,393</div><div class="per-night">$113/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vr-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/785189?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Ocean view with your capuccino</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 9.6/10 (4 reviews) &middot; 2 min walk to beach!</div><div class="listing-note">Same listing as Airbnb — $280 cheaper on VRBO.</div></div><div class="listing-price"><div class="amount">$4,073</div><div class="per-night">$136/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/785189?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Ocean view with your capuccino</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 9.6/10 (4 reviews) &middot; 2 min walk to beach!</div><div class="listing-note">Same listing as Airbnb — $280 cheaper on VRBO.</div></div><div class="listing-price"><div class="amount">$4,073</div><div class="per-night">$136/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vr-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/4662737?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Charming 1BR in Prime SM – Walk to Beach</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 8 min walk to beach</div><div class="listing-note">Walk to beach confirmed.</div></div><div class="listing-price"><div class="amount">$4,613</div><div class="per-night">$154/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/4662737?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Charming 1BR in Prime SM – Walk to Beach</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 8 min walk to beach</div><div class="listing-note">Walk to beach confirmed.</div></div><div class="listing-price"><div class="amount">$4,613</div><div class="per-night">$154/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vr-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/3746776?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Santa Monica Beach Condo Newly Remodeled</a></div><div class="listing-meta">Condo &middot; 1BR &middot; 10/10 (1 review) &middot; 8 min walk to beach</div><div class="listing-note">$1,690 monthly discount. Newly remodeled.</div></div><div class="listing-price"><div class="amount">$4,543</div><div class="per-night">$151/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/3746776?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Santa Monica Beach Condo Newly Remodeled</a></div><div class="listing-meta">Condo &middot; 1BR &middot; 10/10 (1 review) &middot; 8 min walk to beach</div><div class="listing-note">$1,690 monthly discount. Newly remodeled.</div></div><div class="listing-price"><div class="amount">$4,543</div><div class="per-night">$151/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vr-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/2867931?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Modern &amp; Cozy 1BR/1BA – 0.6 mi from Beach</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 9.6/10 (10 reviews) &middot; 3 min drive</div><div class="listing-note">$1,643 monthly discount. Just over budget.</div></div><div class="listing-price"><div class="amount">$5,306</div><div class="per-night">$177/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/2867931?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Modern &amp; Cozy 1BR/1BA – 0.6 mi from Beach</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 9.6/10 (10 reviews) &middot; 3 min drive</div><div class="listing-note">$1,643 monthly discount. Just over budget.</div></div><div class="listing-price"><div class="amount">$5,306</div><div class="per-night">$177/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vr-6"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/2632456?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Six blocks to the Pacific Ocean!!</a></div><div class="listing-meta">House &middot; 2BR &middot; 10/10 (12 reviews) &middot; 15 min walk</div><div class="listing-note">Over budget but a real house — great HSP option.</div></div><div class="listing-price"><div class="amount">$6,984</div><div class="per-night">$233/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-6"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/2632456?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Six blocks to the Pacific Ocean!!</a></div><div class="listing-meta">House &middot; 2BR &middot; 10/10 (12 reviews) &middot; 15 min walk</div><div class="listing-note">Over budget but a real house — great HSP option.</div></div><div class="listing-price"><div class="amount">$6,984</div><div class="per-night">$233/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vr-7"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/2613373?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Cozy SM 2BD House with driveway</a></div><div class="listing-meta">House &middot; 2BR &middot; 9.2/10 (66 reviews) &middot; 11 min drive</div><div class="listing-note">66 reviews! Monthly discount. Driveway parking.</div></div><div class="listing-price"><div class="amount">$5,963</div><div class="per-night">$199/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vr-7"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/2613373?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Cozy SM 2BD House with driveway</a></div><div class="listing-meta">House &middot; 2BR &middot; 9.2/10 (66 reviews) &middot; 11 min drive</div><div class="listing-note">66 reviews! Monthly discount. Driveway parking.</div></div><div class="listing-price"><div class="amount">$5,963</div><div class="per-night">$199/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <a class="browse-all" href="https://www.vrbo.com/search?destination=Santa+Monica%2C+CA&startDate=2026-04-26&endDate=2026-05-26&adults=2&minBedrooms=1&amenities=KITCHEN" target="_blank">Browse all VRBO results &rarr;</a>
+    <a class="browse-all" href="https://www.vrbo.com/search?destination=Santa+Monica%2C+CA&startDate=2026-04-26&endDate=2026-05-26&adults=2&minBedrooms=1&amenities=KITCHEN" target="_blank" rel="noopener noreferrer">Browse all VRBO results &rarr;</a>
   </div>
 
   <!-- FURNISHED FINDER -->
@@ -270,25 +414,25 @@
       <span class="platform-badge">Monthly rentals &middot; Under $5k/mo</span>
     </div>
 
-    <div class="listing" data-id="ff-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/913496_1" target="_blank">Fully Furnished 2BR Apt – Across from Ishihara Park</a></div><div class="listing-meta">House &middot; 2BR/1BA &middot; 785 sq ft &middot; Utilities included &middot; Fireplace</div><div class="listing-note"><strong>1-month minimum!</strong> Great residential SM location.</div></div><div class="listing-price"><div class="amount">$3,600</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/913496_1" target="_blank" rel="noopener noreferrer">Fully Furnished 2BR Apt – Across from Ishihara Park</a></div><div class="listing-meta">House &middot; 2BR/1BA &middot; 785 sq ft &middot; Utilities included &middot; Fireplace</div><div class="listing-note"><strong>1-month minimum!</strong> Great residential SM location.</div></div><div class="listing-price"><div class="amount">$3,600</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/813229_1" target="_blank">Modern Santa Monica Studio</a></div><div class="listing-meta">Cottage &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Studio cottage in SM.</div></div><div class="listing-price"><div class="amount">$3,000</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/813229_1" target="_blank" rel="noopener noreferrer">Modern Santa Monica Studio</a></div><div class="listing-meta">Cottage &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Studio cottage in SM.</div></div><div class="listing-price"><div class="amount">$3,000</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/884586_1" target="_blank">ADU Garden Retreat</a></div><div class="listing-meta">Cottage &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Detached ADU = private, low fragrance risk.</div></div><div class="listing-price"><div class="amount">$3,000</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/884586_1" target="_blank" rel="noopener noreferrer">ADU Garden Retreat</a></div><div class="listing-meta">Cottage &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Detached ADU = private, low fragrance risk.</div></div><div class="listing-price"><div class="amount">$3,000</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/880524_1" target="_blank">Bright Studio with Garden, UNIT B</a></div><div class="listing-meta">Apartment &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Garden unit in SM.</div></div><div class="listing-price"><div class="amount">$3,500</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/880524_1" target="_blank" rel="noopener noreferrer">Bright Studio with Garden, UNIT B</a></div><div class="listing-meta">Apartment &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Garden unit in SM.</div></div><div class="listing-price"><div class="amount">$3,500</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/916831_1" target="_blank">Entire 1BR Apt – Montana &amp; 5 Blocks to Beach</a></div><div class="listing-meta">Apartment &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Montana Ave area — upscale, walkable. 5 blocks to beach.</div></div><div class="listing-price"><div class="amount">$4,300</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/916831_1" target="_blank" rel="noopener noreferrer">Entire 1BR Apt – Montana &amp; 5 Blocks to Beach</a></div><div class="listing-meta">Apartment &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Montana Ave area — upscale, walkable. 5 blocks to beach.</div></div><div class="listing-price"><div class="amount">$4,300</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-6"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/671550_1" target="_blank">Boho by the Beach</a></div><div class="listing-meta">Apartment &middot; 2BR/2BA &middot; SM</div><div class="listing-note">2BR in SM with beach access.</div></div><div class="listing-price"><div class="amount">$4,295</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-6"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/671550_1" target="_blank" rel="noopener noreferrer">Boho by the Beach</a></div><div class="listing-meta">Apartment &middot; 2BR/2BA &middot; SM</div><div class="listing-note">2BR in SM with beach access.</div></div><div class="listing-price"><div class="amount">$4,295</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-7"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/662220_1" target="_blank">SM Beach Newly Remodeled Condo</a></div><div class="listing-meta">Condo &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Newly remodeled = fresh, less residual scent.</div></div><div class="listing-price"><div class="amount">$4,250</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-7"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/662220_1" target="_blank" rel="noopener noreferrer">SM Beach Newly Remodeled Condo</a></div><div class="listing-meta">Condo &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Newly remodeled = fresh, less residual scent.</div></div><div class="listing-price"><div class="amount">$4,250</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-8"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/834457_1" target="_blank">Chic, Luxury One Bedroom Bungalow</a></div><div class="listing-meta">House &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Bungalow = standalone, good for scent control.</div></div><div class="listing-price"><div class="amount">$3,600</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-8"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/834457_1" target="_blank" rel="noopener noreferrer">Chic, Luxury One Bedroom Bungalow</a></div><div class="listing-meta">House &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Bungalow = standalone, good for scent control.</div></div><div class="listing-price"><div class="amount">$3,600</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="ff-9"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/708972_1" target="_blank">Designer Ocean View Studio</a></div><div class="listing-meta">Apartment &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Ocean view studio in SM.</div></div><div class="listing-price"><div class="amount">$3,300</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="ff-9"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/708972_1" target="_blank" rel="noopener noreferrer">Designer Ocean View Studio</a></div><div class="listing-meta">Apartment &middot; 1BR/1BA &middot; SM</div><div class="listing-note">Ocean view studio in SM.</div></div><div class="listing-price"><div class="amount">$3,300</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <a class="browse-all" href="https://www.furnishedfinder.com/housing/us--ca--santa-monica" target="_blank">Browse all Furnished Finder results &rarr;</a>
+    <a class="browse-all" href="https://www.furnishedfinder.com/housing/us--ca--santa-monica" target="_blank" rel="noopener noreferrer">Browse all Furnished Finder results &rarr;</a>
   </div>
 
 
@@ -307,17 +451,17 @@
       <span class="platform-badge">Monthly stays · Kitchen filter</span>
     </div>
 
-    <div class="listing" data-id="vab-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1572769059764500590?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Spacious Venice Beach 1 BR Close to Abbot Kinney</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; Superhost &middot; Venice</div><div class="listing-note">18% monthly discount. Steps from Abbot Kinney Blvd.</div></div><div class="listing-price"><div class="amount">$3,567</div><div class="per-night">~$119/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vab-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/1572769059764500590?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Spacious Venice Beach 1 BR Close to Abbot Kinney</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; Superhost &middot; Venice</div><div class="listing-note">18% monthly discount. Steps from Abbot Kinney Blvd.</div></div><div class="listing-price"><div class="amount">$3,567</div><div class="per-night">~$119/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vab-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/2793606?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Charming Westside Cottage</a></div><div class="listing-meta">Guesthouse &middot; 1BR &middot; 5.0 (3 reviews) &middot; Venice</div><div class="listing-note">Standalone guesthouse = private, good for HSP. Perfect rating.</div></div><div class="listing-price"><div class="amount">$3,756</div><div class="per-night">~$125/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vab-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/2793606?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Charming Westside Cottage</a></div><div class="listing-meta">Guesthouse &middot; 1BR &middot; 5.0 (3 reviews) &middot; Venice</div><div class="listing-note">Standalone guesthouse = private, good for HSP. Perfect rating.</div></div><div class="listing-price"><div class="amount">$3,756</div><div class="per-night">~$125/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vab-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/42721461?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Venice Bungalow Newly furnished and remodeled!</a></div><div class="listing-meta">Bungalow &middot; 1BR &middot; 4.63 (8 reviews) &middot; Superhost &middot; Venice</div><div class="listing-note">Newly remodeled bungalow = fresh, less fragrance buildup.</div></div><div class="listing-price"><div class="amount">$3,802</div><div class="per-night">~$127/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vab-3"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/42721461?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Venice Bungalow Newly furnished and remodeled!</a></div><div class="listing-meta">Bungalow &middot; 1BR &middot; 4.63 (8 reviews) &middot; Superhost &middot; Venice</div><div class="listing-note">Newly remodeled bungalow = fresh, less fragrance buildup.</div></div><div class="listing-price"><div class="amount">$3,802</div><div class="per-night">~$127/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vab-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/563877394009230627?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Relax in our Cozy Marina del Rey Spot!</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 5.0 (4 reviews) &middot; Superhost &middot; Marina del Rey</div><div class="listing-note">Perfect rating. Marina del Rey = quieter than Venice boardwalk.</div></div><div class="listing-price"><div class="amount">$4,503</div><div class="per-night">~$150/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vab-4"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/563877394009230627?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Relax in our Cozy Marina del Rey Spot!</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 5.0 (4 reviews) &middot; Superhost &middot; Marina del Rey</div><div class="listing-note">Perfect rating. Marina del Rey = quieter than Venice boardwalk.</div></div><div class="listing-price"><div class="amount">$4,503</div><div class="per-night">~$150/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vab-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/604643044849772539?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank">Cozy Studio 1 blk to Venice Beach Full kitchen W/D</a></div><div class="listing-meta">Condo &middot; 1BR &middot; 4.93 (14 reviews) &middot; 1 block to beach</div><div class="listing-note">22% monthly discount. Full kitchen + W/D. Right at Venice Beach.</div></div><div class="listing-price"><div class="amount">$4,679</div><div class="per-night">~$156/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vab-5"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.airbnb.com/rooms/604643044849772539?adults=2&check_in=2026-04-26&check_out=2026-05-26" target="_blank" rel="noopener noreferrer">Cozy Studio 1 blk to Venice Beach Full kitchen W/D</a></div><div class="listing-meta">Condo &middot; 1BR &middot; 4.93 (14 reviews) &middot; 1 block to beach</div><div class="listing-note">22% monthly discount. Full kitchen + W/D. Right at Venice Beach.</div></div><div class="listing-price"><div class="amount">$4,679</div><div class="per-night">~$156/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <a class="browse-all" href="https://www.airbnb.com/s/Venice--Los-Angeles--CA/homes?checkin=2026-04-26&checkout=2026-05-26&adults=2&min_bedrooms=1&amenities%5B%5D=8&price_max=5000&monthly_start_date=2026-04-26&monthly_length=1" target="_blank">Browse all Venice Airbnb results &rarr;</a>
+    <a class="browse-all" href="https://www.airbnb.com/s/Venice--Los-Angeles--CA/homes?checkin=2026-04-26&checkout=2026-05-26&adults=2&min_bedrooms=1&amenities%5B%5D=8&price_max=5000&monthly_start_date=2026-04-26&monthly_length=1" target="_blank" rel="noopener noreferrer">Browse all Venice Airbnb results &rarr;</a>
   </div>
 
   <!-- VENICE — VRBO -->
@@ -327,11 +471,11 @@
       <span class="platform-badge">Apr 26 – May 26 · Kitchen filter</span>
     </div>
 
-    <div class="listing" data-id="vvr-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/1983693?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Dreamy Beachfront Studio – Wake Up to the Ocean</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 10/10 (1 review) &middot; On the beach!</div><div class="listing-note">Literally on the beach. Free cancellation until Apr 12. Hot tub.</div></div><div class="listing-price"><div class="amount">$3,537</div><div class="per-night">$118/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vvr-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/1983693?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Dreamy Beachfront Studio – Wake Up to the Ocean</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 10/10 (1 review) &middot; On the beach!</div><div class="listing-note">Literally on the beach. Free cancellation until Apr 12. Hot tub.</div></div><div class="listing-price"><div class="amount">$3,537</div><div class="per-night">$118/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vvr-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/956185?chkin=2026-04-26&chkout=2026-05-26" target="_blank">Venice Beach Oceanside Retreat – Steps to Beach!</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 9.8/10 (44 reviews) &middot; 2 min walk to beach</div><div class="listing-note">Gated yard, BBQ, parking, cabana. Slightly over $5k budget but 44 stellar reviews.</div></div><div class="listing-price"><div class="amount">$5,446</div><div class="per-night">$182/night</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vvr-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.vrbo.com/956185?chkin=2026-04-26&chkout=2026-05-26" target="_blank" rel="noopener noreferrer">Venice Beach Oceanside Retreat – Steps to Beach!</a></div><div class="listing-meta">Apartment &middot; 1BR &middot; 9.8/10 (44 reviews) &middot; 2 min walk to beach</div><div class="listing-note">Gated yard, BBQ, parking, cabana. Slightly over $5k budget but 44 stellar reviews.</div></div><div class="listing-price"><div class="amount">$5,446</div><div class="per-night">$182/night</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <a class="browse-all" href="https://www.vrbo.com/search?minBedrooms=1&destination=Venice%2C+Los+Angeles%2C+California&startDate=2026-04-26&endDate=2026-05-26&adults=2&amenities=KITCHEN&sort=RECOMMENDED" target="_blank">Browse all Venice VRBO results &rarr;</a>
+    <a class="browse-all" href="https://www.vrbo.com/search?minBedrooms=1&destination=Venice%2C+Los+Angeles%2C+California&startDate=2026-04-26&endDate=2026-05-26&adults=2&amenities=KITCHEN&sort=RECOMMENDED" target="_blank" rel="noopener noreferrer">Browse all Venice VRBO results &rarr;</a>
   </div>
 
   <!-- VENICE — FURNISHED FINDER -->
@@ -341,11 +485,11 @@
       <span class="platform-badge">Monthly rentals</span>
     </div>
 
-    <div class="listing" data-id="vff-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/975875_1" target="_blank">Close to Abbott Kinney – Room with Private Bathroom</a></div><div class="listing-meta">Room in House &middot; 1BR/1BA &middot; Venice &middot; Utilities included</div><div class="listing-note">Budget pick. Private room (not whole unit) but walkable to Abbot Kinney &amp; beach.</div></div><div class="listing-price"><div class="amount">$2,300</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vff-1"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/975875_1" target="_blank" rel="noopener noreferrer">Close to Abbott Kinney – Room with Private Bathroom</a></div><div class="listing-meta">Room in House &middot; 1BR/1BA &middot; Venice &middot; Utilities included</div><div class="listing-note">Budget pick. Private room (not whole unit) but walkable to Abbot Kinney &amp; beach.</div></div><div class="listing-price"><div class="amount">$2,300</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <div class="listing" data-id="vff-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/589136_1" target="_blank">Venice Bungalow in Family-Friendly Neighborhood</a></div><div class="listing-meta">Cottage &middot; 2BR/1BA &middot; Venice &middot; Pets allowed &middot; Utilities included</div><div class="listing-note">Standalone cottage in a family neighborhood. Great HSP option.</div></div><div class="listing-price"><div class="amount">$4,500</div><div class="per-night">/month</div></div></div><div class="vote-row"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny">&#10007; Deny</button></div></div>
+    <div class="listing" data-id="vff-2"><div class="listing-top"><div class="listing-info"><div class="listing-name"><a href="https://www.furnishedfinder.com/property/589136_1" target="_blank" rel="noopener noreferrer">Venice Bungalow in Family-Friendly Neighborhood</a></div><div class="listing-meta">Cottage &middot; 2BR/1BA &middot; Venice &middot; Pets allowed &middot; Utilities included</div><div class="listing-note">Standalone cottage in a family neighborhood. Great HSP option.</div></div><div class="listing-price"><div class="amount">$4,500</div><div class="per-night">/month</div></div></div><div class="vote-row" role="group" aria-label="Vote on this listing"><button class="vote-btn" onclick="vote(this,'approve')" data-choice="approve" aria-pressed="false" aria-label="Approve this listing">&#10003; Approve</button><button class="vote-btn" onclick="vote(this,'maybe')" data-choice="maybe" aria-pressed="false" aria-label="Mark as maybe">&#9679; Maybe</button><button class="vote-btn" onclick="vote(this,'deny')" data-choice="deny" aria-pressed="false" aria-label="Deny this listing">&#10007; Deny</button></div></div>
 
-    <a class="browse-all" href="https://www.furnishedfinder.com/housing/us--ca--venice" target="_blank">Browse all Venice Furnished Finder results &rarr;</a>
+    <a class="browse-all" href="https://www.furnishedfinder.com/housing/us--ca--venice" target="_blank" rel="noopener noreferrer">Browse all Venice Furnished Finder results &rarr;</a>
   </div>
 
   <!-- OTHER PLATFORMS -->
@@ -354,16 +498,16 @@
       <h2>Other Platforms Worth Checking</h2>
     </div>
     <div class="other-platforms">
-      <div class="other-card"><h4><a href="https://www.hellolanding.com/s/santa-monica-ca/apartments/extended-stay" target="_blank">Landing</a></h4><p>Furnished apartments, full kitchens, dedicated workspaces</p><p><strong>~$3,500–$4,500/mo</strong></p></div>
-      <div class="other-card"><h4><a href="https://www.sabbaticalhomes.com/rentals-exchanges/united-states/homes-to-rent--california--santa-monica" target="_blank">SabbaticalHomes</a></h4><p>Real homes from academics — great for HSP (no vacation rental cleaning chemicals)</p><p><strong>$3,550–$4,000/mo</strong></p></div>
-      <div class="other-card"><h4><a href="https://www.calmarhotel.com/" target="_blank">Cal Mar Hotel Suites</a></h4><p>Hotel with full kitchens, 1 block from 3rd St Promenade &middot; Call 310-395-5555 for extended stay rates</p><p><strong>~$206+/night (~$6,180/mo)</strong></p></div>
+      <div class="other-card"><h4><a href="https://www.hellolanding.com/s/santa-monica-ca/apartments/extended-stay" target="_blank" rel="noopener noreferrer">Landing</a></h4><p>Furnished apartments, full kitchens, dedicated workspaces</p><p><strong>~$3,500–$4,500/mo</strong></p></div>
+      <div class="other-card"><h4><a href="https://www.sabbaticalhomes.com/rentals-exchanges/united-states/homes-to-rent--california--santa-monica" target="_blank" rel="noopener noreferrer">SabbaticalHomes</a></h4><p>Real homes from academics — great for HSP (no vacation rental cleaning chemicals)</p><p><strong>$3,550–$4,000/mo</strong></p></div>
+      <div class="other-card"><h4><a href="https://www.calmarhotel.com/" target="_blank" rel="noopener noreferrer">Cal Mar Hotel Suites</a></h4><p>Hotel with full kitchens, 1 block from 3rd St Promenade &middot; Call 310-395-5555 for extended stay rates</p><p><strong>~$206+/night (~$6,180/mo)</strong></p></div>
     </div>
     <div class="avoid-card"><strong>Avoid Blueground</strong> — Bad reviews on Reddit (poor customer support, spaces not matching photos, cleanliness issues). Scratched from this list.</div>
   </div>
 
   <!-- HSP SECTION -->
-  <div class="hsp-section">
-    <h2>HSP / Scent Sensitivity Strategy</h2>
+  <section class="hsp-section" aria-labelledby="hsp-heading">
+    <h2 id="hsp-heading">HSP / Scent Sensitivity Strategy</h2>
     <p style="font-size:0.88rem; margin-bottom:1rem; font-weight:600;">Best bets for low-fragrance environments:</p>
     <ol class="hsp-ranking">
       <li><span class="rank">1</span> <strong>Furnished Finder ADU/cottage/bungalow listings</strong> — Standalone units, not cleaned by hotel housekeeping.</li>
@@ -376,16 +520,17 @@
       <div class="label">Template message to send hosts before booking</div>
       Hi! My wife and I are exploring Santa Monica as a potential place to live, and we're looking at your listing for a month-long stay starting April 26. Quick question before we book: my wife is very sensitive to fragrances (she's an HSP). Do you use any scented plugins, air fresheners, or strongly scented laundry detergent/fabric softener on the linens? We're happy to bring our own bedding for the first few nights if needed. We'd also be happy to do our own laundry during our stay. Thanks!
     </div>
-  </div>
+  </section>
 
 </div>
+</main>
 
-<footer>Compiled March 30, 2026</footer>
+<footer role="contentinfo">Compiled March 30, 2026</footer>
 
 <!-- Sticky submit bar -->
-<div class="submit-bar" id="submitBar">
+<div class="submit-bar" id="submitBar" role="region" aria-label="Submit your votes">
   <button class="submit-btn" id="submitBtn" onclick="saveVotes()">Submit Selections</button>
-  <div class="submit-count" id="submitCount">0 of 25 listings rated</div>
+  <div class="submit-count" id="submitCount" role="status" aria-live="polite">0 of 25 listings rated</div>
 </div>
 
 <script>
@@ -431,15 +576,20 @@
     // If already selected this choice, deselect
     if (votes[id] === choice) {
       delete votes[id];
-      btns.forEach(function(b) { b.className = 'vote-btn'; });
+      btns.forEach(function(b) {
+        b.className = 'vote-btn';
+        b.setAttribute('aria-pressed', 'false');
+      });
       card.classList.remove('voted-approve','voted-deny','voted-maybe');
     } else {
       votes[id] = choice;
       btns.forEach(function(b) {
         if (b.getAttribute('data-choice') === choice) {
           b.className = 'vote-btn ' + choice + '-active';
+          b.setAttribute('aria-pressed', 'true');
         } else {
           b.className = 'vote-btn';
+          b.setAttribute('aria-pressed', 'false');
         }
       });
       card.classList.remove('voted-approve','voted-deny','voted-maybe');
@@ -477,6 +627,8 @@
       btn.classList.remove('saving');
       var msg = document.createElement('div');
       msg.className = success ? 'submit-saved-msg' : 'submit-error-msg';
+      msg.setAttribute('role', 'status');
+      msg.setAttribute('aria-live', 'polite');
       msg.textContent = text;
       bar.appendChild(msg);
       if (success) setTimeout(function() { msg.style.opacity = '0.5'; }, 3000);
@@ -523,8 +675,10 @@
       btns.forEach(function(b) {
         if (b.getAttribute('data-choice') === choice) {
           b.className = 'vote-btn ' + choice + '-active';
+          b.setAttribute('aria-pressed', 'true');
         } else {
           b.className = 'vote-btn';
+          b.setAttribute('aria-pressed', 'false');
         }
       });
       card.classList.add('voted-' + choice);
